@@ -54,7 +54,8 @@
 import struct, serial, time, binascii, socket, ctypes
 import os
 if(os.name == 'nt'):
-        import win32pipe, win32file
+    import my_win32pipe as win32pipe
+    import my_win32file as win32file
 
 DLT_IPV4            = 228 # Raw IPv4
 TCPDUMP_MAGIC       = 0xa1b2c3d4 # Standard libpcap format

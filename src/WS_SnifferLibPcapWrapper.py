@@ -48,7 +48,8 @@
 import struct, serial, time, binascii
 import os
 if(os.name == 'nt'):
-        import win32pipe, win32file
+    import my_win32pipe as win32pipe
+    import my_win32file as win32file
 
 DLT_IEEE802_15_4    = 195
 TCPDUMP_MAGIC       = 0xa1b2c3d4 # Standard libpcap format
@@ -68,9 +69,8 @@ class cWS_IEEE802_15_4_LibPcapWrapper:
             self.f = -1
 
         self.p = None
-        
-    def OpenPipe(self):#,pipeName = r'\\.\pipe\wireshark'):
-        #self.sPipeName = pipeName
+
+    def OpenPipe(self):
         if(self.os == 'nt'):
             self.p = win32pipe.CreateNamedPipe(
                 self.sPipeName,
@@ -84,7 +84,7 @@ class cWS_IEEE802_15_4_LibPcapWrapper:
             os.mkfifo(self.sPipeName)
             self.f = 0 #Remember to unlink the FIFO
             self.p = os.open(self.sPipeName, os.O_WRONLY)
-        
+
     def ClosePipe(self):
         if not self.p is None:
             if(self.os == 'nt'):
@@ -94,10 +94,10 @@ class cWS_IEEE802_15_4_LibPcapWrapper:
 
         if(self.os == 'posix' and self.f == 0):
             os.unlink(self.sPipeName)
-        
+
     def getPipeName(self):
         return self.sPipeName
-        
+
     def WriteFileHeader(self):
         if(self.os == 'nt'):
             win32file.WriteFile(self.p, struct.pack("<L",TCPDUMP_MAGIC))
